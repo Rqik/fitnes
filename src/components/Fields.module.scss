@@ -1,0 +1,26 @@
+.numeric-field {
+  &__hint { color: var(--muted); font-size: .75rem; }
+
+  &__error {
+    color: var(--error);
+    font-size: .75rem;
+
+    &:empty { display: none; }
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    span {
+      position: absolute;
+      inset-inline-end: .65rem;
+      color: var(--muted);
+      font-size: .82rem;
+      pointer-events: none;
+    }
+
+    input { padding-inline-end: 2.3rem; }
+  }
+}

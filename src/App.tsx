@@ -1,4 +1,4 @@
-import { Accessibility, Activity, CalendarDays, ChartNoAxesCombined, ClipboardList, LayoutGrid, Menu, Plus, ShieldCheck, Target, X } from 'lucide-react';
+import { Activity, CalendarDays, ChartNoAxesCombined, ClipboardList, LayoutGrid, Menu, PersonStanding, Plus, ShieldCheck, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Backup } from './components/Backup';
 import { Comparisons } from './components/Comparisons';
@@ -15,10 +15,12 @@ import { type Metric, type Values } from './domain/metrics';
 import { buildSeries } from './domain/statistics';
 import { ConflictError } from './storage/journalStore';
 import { useJournal } from './storage/useJournal';
+import ui from './styles/ui.module.scss';
+import styles from './App.module.scss';
 
 const pages = {
   overview: { label: 'Обзор', title: 'Твои показатели', description: '', icon: LayoutGrid },
-  muscles: { label: 'Карта мышц', title: 'Карта мышц', description: '', icon: Accessibility },
+  muscles: { label: 'Карта мышц', title: 'Карта мышц', description: '', icon: PersonStanding },
   history: { label: 'История', title: 'История замеров', description: 'Все записи по датам. Откройте замер, чтобы дополнить или исправить его.', icon: ClipboardList },
   compare: { label: 'Сравнения', title: 'Сравнения', description: 'Справочные диапазоны и замеры из опубликованной выборки.', icon: ChartNoAxesCombined },
   goals: { label: 'Цели', title: 'Цели и фокус', description: 'Выберите направление и отслеживайте прогресс по своим целям.', icon: Target },
@@ -45,32 +47,32 @@ function Navigation({ page }: { page: Page }) {
   const MenuIcon = isMenuOpen ? X : Menu;
 
   return (
-    <aside className="sidebar" data-menu-open={isMenuOpen} onKeyDown={(event) => {
+    <aside className={styles.sidebar} data-menu-open={isMenuOpen} onKeyDown={(event) => {
       if (event.key !== 'Escape' || !isMenuOpen || !menuButton.current?.getClientRects().length) return;
       setIsMenuOpen(false);
       menuButton.current.focus();
     }}>
-      <a className="brand" href="#overview" aria-label="Fitnes — обзор" onClick={() => setIsMenuOpen(false)}>
-        <span className="brand-icon"><Activity size={21} strokeWidth={1.7} aria-hidden="true" /></span>
+      <a className={styles['sidebar__brand']} href="#overview" aria-label="Fitnes — обзор" onClick={() => setIsMenuOpen(false)}>
+        <span className={styles['sidebar__mark']}><Activity size={21} strokeWidth={1.7} aria-hidden="true" /></span>
         <span><strong>Fitnes</strong><small>Дневник замеров</small></span>
       </a>
-      <button type="button" className="button button--icon menu-toggle" ref={menuButton} aria-controls="journal-navigation" aria-expanded={isMenuOpen} aria-label="Меню" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+      <button type="button" className={`${ui.button} ${ui['button--icon']} ${styles['sidebar__toggle']}`} ref={menuButton} aria-controls="journal-navigation" aria-expanded={isMenuOpen} aria-label="Меню" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <MenuIcon size={22} strokeWidth={1.7} aria-hidden="true" />
       </button>
-      <nav id="journal-navigation" className="navigation" aria-label="Разделы дневника">
-        <ul>
+      <nav id="journal-navigation" className={styles['sidebar__navigation']} aria-label="Разделы дневника">
+        <ul className={styles['sidebar__links']}>
           {mainNav.map((item) => {
             const { icon: Icon, label } = pages[item];
             return (
               <li key={item}>
-                <a href={`#${item}`} aria-current={page === item ? 'page' : undefined} onClick={() => setIsMenuOpen(false)}>
+                <a className={styles['sidebar__link']} href={`#${item}`} aria-current={page === item ? 'page' : undefined} onClick={() => setIsMenuOpen(false)}>
                   <Icon size={18} strokeWidth={1.7} aria-hidden="true" /><span>{label}</span>
                 </a>
               </li>
             );
           })}
-          <li className="data-item">
-            <a href="#backup" aria-current={page === 'backup' ? 'page' : undefined} onClick={() => setIsMenuOpen(false)}>
+          <li className={styles['sidebar__backup']}>
+            <a className={styles['sidebar__link']} href="#backup" aria-current={page === 'backup' ? 'page' : undefined} onClick={() => setIsMenuOpen(false)}>
               <ShieldCheck size={18} strokeWidth={1.7} aria-hidden="true" /><span>Мои данные</span>
             </a>
           </li>
@@ -174,7 +176,7 @@ export default function App() {
   }
 
   function renderPage() {
-    if (!snapshot || !journal) return <p className="panel panel-body muted" role="status">Открываем дневник…</p>;
+    if (!snapshot || !journal) return <p className={`${ui.panel} ${ui['panel__body']} ${ui.muted}`} role="status">Открываем дневник…</p>;
     switch (page) {
       case 'overview':
         return <Overview series={series} entries={entries} profile={journal.profile} />;
@@ -199,26 +201,26 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#main" onClick={(event) => { event.preventDefault(); heading.current?.focus(); }}>К содержимому</a>
-      <div className="app-shell">
+      <a className={styles['app__skip-link']} href="#main" onClick={(event) => { event.preventDefault(); heading.current?.focus(); }}>К содержимому</a>
+      <div className={styles.app}>
         <Navigation page={page} />
-        <main id="main" className="main">
-          <div className="main-inner">
-            <header className={page === 'muscles' ? 'page-header page-header--map' : 'page-header'}>
+        <main id="main" className={styles['app__main']}>
+          <div className={styles['app__content']}>
+            <header className={page === 'muscles' ? `${styles['page-header']} ${styles['page-header--map']}` : styles['page-header']}>
               <div>
-                {page === 'overview' ? <div className="today"><CalendarDays size={15} aria-hidden="true" /><time dateTime={today}>{formatDate(today, 'heading')}</time></div> : null}
+                {page === 'overview' ? <div className={styles['page-header__today']}><CalendarDays size={15} aria-hidden="true" /><time dateTime={today}>{formatDate(today, 'heading')}</time></div> : null}
                 <h1 ref={heading} tabIndex={-1}>{pages[page].title}</h1>
                 {pages[page].description ? <p>{pages[page].description}</p> : null}
               </div>
-              {page === 'muscles' ? null : <button type="button" className="button button--primary add-button" disabled={!snapshot || loadError} onClick={() => openEntry()}>
+              {page === 'muscles' ? null : <button type="button" className={`${ui.button} ${ui['button--primary']}`} disabled={!snapshot || loadError} onClick={() => openEntry()}>
                 <Plus size={19} strokeWidth={2.5} aria-hidden="true" /> Добавить замер
               </button>}
             </header>
-            <div className="status-line" role="status">{notice}</div>
+            <div className={styles['app__status']} role="status">{notice}</div>
             {loadError ? (
-              <div className="panel panel-body load-error">
+              <div className={`${ui.panel} ${ui['panel__body']} ${styles['app__load-error']}`}>
                 <p role="alert">Не удалось открыть дневник. Проверьте, доступно ли хранилище браузера.</p>
-                <button type="button" className="button button--secondary" onClick={() => void reload()}>Повторить</button>
+                <button type="button" className={`${ui.button} ${ui['button--secondary']}`} onClick={() => void reload()}>Повторить</button>
               </div>
             ) : renderPage()}
           </div>

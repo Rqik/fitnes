@@ -4,6 +4,8 @@ import { type Entry } from '../domain/journal';
 import { metricKeys, metrics, parseMetricValue, type Metric, type Values } from '../domain/metrics';
 import { Dialog } from './Dialogs';
 import { NumericField } from './Fields';
+import ui from '../styles/ui.module.scss';
+import dialogStyles from './Dialogs.module.scss';
 
 export function EntryDialog({ entry, entries, onSave, onEdit, onClose }: {
   entry?: Entry;
@@ -93,9 +95,9 @@ export function EntryDialog({ entry, entries, onSave, onEdit, onClose }: {
 
   return (
     <Dialog dialogRef={dialog} initialFocus={dateInput} title={entry ? 'Редактировать замер' : 'Новый замер'} onClose={onClose} onRequestClose={canDismiss}>
-      <form method="post" className="dialog-body form-stack" onSubmit={submit}>
-        <div className="field entry-date">
-          <label htmlFor={id}>Дата <span className="muted">(обязательно)</span></label>
+      <form method="post" className={`${dialogStyles['dialog__body']} ${ui['form-layout']}`} onSubmit={submit}>
+        <div className={`${ui.field} ${ui['field--date']}`}>
+          <label htmlFor={id}>Дата <span className={ui.muted}>(обязательно)</span></label>
           <input
             id={id}
             name="date"
@@ -110,33 +112,33 @@ export function EntryDialog({ entry, entries, onSave, onEdit, onClose }: {
           />
         </div>
         {duplicate ? (
-          <div className="message" id={`${id}-duplicate`}>
+          <div className={ui.message} id={`${id}-duplicate`}>
             <p>На эту дату уже есть замер.</p>
-            {entry ? null : <button type="button" className="button button--secondary" onClick={() => onEdit(duplicate)}>Открыть существующий замер</button>}
+            {entry ? null : <button type="button" className={`${ui.button} ${ui['button--secondary']}`} onClick={() => onEdit(duplicate)}>Открыть существующий замер</button>}
           </div>
         ) : null}
         <fieldset>
           <legend>Основные показатели</legend>
-          <div className="form-grid">{fields('body')}</div>
+          <div className={ui['form-layout__grid']}>{fields('body')}</div>
         </fieldset>
         <fieldset>
           <legend>Обхваты</legend>
-          <div className="form-grid">{fields('tape')}</div>
+          <div className={ui['form-layout__grid']}>{fields('tape')}</div>
         </fieldset>
-        <details className="disclosure" open={entry?.values.waistNhanes !== undefined || Boolean(draft.waistNhanes) ? true : undefined}>
+        <details className={ui.disclosure} open={entry?.values.waistNhanes !== undefined || Boolean(draft.waistNhanes) ? true : undefined}>
           <summary>Дополнительный замер для NHANES</summary>
           {fields('reference')}
         </details>
-        {error ? <p className="message message--error" role="alert">{error}</p> : null}
+        {error ? <p className={`${ui.message} ${ui['message--error']}`} role="alert">{error}</p> : null}
         {showDiscard ? (
-          <div className="message discard-message" id={`${id}-discard`}>
+          <div className={`${ui.message} ${ui['message--discard']}`} id={`${id}-discard`}>
             <span>Замер содержит несохранённые изменения.</span>
-            <button type="button" className="button button--danger" ref={discardButton} aria-describedby={`${id}-discard`} disabled={isSaving} onClick={() => dialog.current?.close()}>Не сохранять</button>
+            <button type="button" className={`${ui.button} ${ui['button--danger']}`} ref={discardButton} aria-describedby={`${id}-discard`} disabled={isSaving} onClick={() => dialog.current?.close()}>Не сохранять</button>
           </div>
         ) : null}
-        <div className="dialog-actions">
-          <button type="button" className="button button--secondary" disabled={isSaving} onClick={() => { if (canDismiss()) dialog.current?.close(); }}>Отмена</button>
-          <button type="submit" className="button button--primary" disabled={isSaving || Boolean(duplicate)}>{isSaving ? 'Сохраняем…' : 'Сохранить замер'}</button>
+        <div className={dialogStyles['dialog__actions']}>
+          <button type="button" className={`${ui.button} ${ui['button--secondary']}`} disabled={isSaving} onClick={() => { if (canDismiss()) dialog.current?.close(); }}>Отмена</button>
+          <button type="submit" className={`${ui.button} ${ui['button--primary']}`} disabled={isSaving || Boolean(duplicate)}>{isSaving ? 'Сохраняем…' : 'Сохранить замер'}</button>
         </div>
       </form>
     </Dialog>

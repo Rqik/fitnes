@@ -1,0 +1,162 @@
+.app {
+  display: grid;
+  min-block-size: 100dvh;
+
+  &__skip-link {
+    position: fixed;
+    z-index: 3;
+    inset: .75rem auto auto .75rem;
+    padding: .65rem 1rem;
+    border-radius: .65rem;
+    background: var(--card);
+
+    &:not(:focus) { translate: 0 -200%; clip-path: inset(50%); }
+  }
+
+  &__main { min-inline-size: 0; padding: 1.45rem clamp(.85rem, 4vw, 3rem) 2.6rem; }
+  &__content { max-inline-size: 78rem; margin-inline: auto; container: main / inline-size; }
+  &__status {
+    color: var(--accent-ink);
+    font-size: .9rem;
+    margin-block: -.65rem .85rem;
+    &:empty { margin: 0; }
+  }
+
+  &__load-error {
+    padding-block-start: 1.25rem;
+    button { margin-block-start: .75rem; }
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border-block-end: 1px solid var(--line);
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    inline-size: fit-content;
+    margin: .95rem 1rem .65rem;
+    text-decoration: none;
+
+    strong { display: block; font-size: 1.25rem; font-weight: 650; letter-spacing: -.03em; line-height: 1.12; }
+    small { display: block; margin-block-start: .1rem; color: var(--muted); font-size: .75rem; }
+  }
+
+  &__mark {
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: .5rem;
+    background: var(--active-surface);
+    color: var(--accent-ink);
+  }
+
+  & &__toggle { display: none; }
+  &__navigation { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem; padding: .2rem .75rem .65rem; }
+  &__links { display: flex; flex-wrap: wrap; gap: .2rem; list-style: none; padding: 0; }
+
+  &__link {
+    display: flex;
+    min-block-size: var(--target);
+    align-items: center;
+    gap: .48rem;
+    padding: .45rem .68rem;
+    border-inline-start: 2px solid transparent;
+    border-radius: .25rem;
+    color: var(--muted);
+    font-size: .85rem;
+    font-weight: 540;
+    text-decoration: none;
+
+    &:hover { background: var(--surface); color: var(--ink); }
+    &[aria-current] { background: var(--active-surface); border-inline-start-color: var(--accent); color: var(--ink); font-weight: 620; }
+  }
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 1.6rem;
+
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 2.625rem);
+    font-weight: 650;
+    letter-spacing: -.035em;
+    &:focus { outline: none; }
+  }
+
+  p { color: var(--muted); margin-block-start: .48rem; }
+
+  &__today { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .82rem; font-weight: 560; margin-block-end: .6rem; }
+
+  &--map {
+    margin-block-end: 1rem;
+    h1 { font-size: clamp(1.65rem, 3.5vw, 2.25rem); }
+  }
+}
+
+@media (min-width: 56rem) {
+  .app {
+    grid-template-columns: 13.2rem minmax(0, 1fr);
+    &__main { padding-block-start: 2.65rem; }
+  }
+
+  .sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100dvh;
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--line);
+    border-block-end: 0;
+
+    &__brand { margin: 1.8rem 1.25rem 2rem; }
+    &__navigation { flex: 1; align-items: stretch; padding: 0 .85rem 1.2rem; }
+    &__links { flex: 1; flex-direction: column; flex-wrap: nowrap; gap: .3rem; }
+    &__backup { margin-block-start: auto; }
+    &__link { gap: .65rem; padding-inline: .82rem; font-size: .91rem; }
+  }
+}
+
+@media (width < 56rem) {
+  .app {
+    grid-template-rows: auto 1fr;
+    &__main { padding-block-start: 1rem; }
+  }
+
+  .sidebar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+
+    &__brand {
+      margin: .5rem .875rem;
+      small { display: none; }
+    }
+
+    &__mark {
+      inline-size: 2rem;
+      block-size: 2rem;
+      svg { inline-size: 1.125rem; }
+    }
+
+    & &__toggle { display: inline-flex; margin-inline-end: .5rem; }
+    &__navigation { display: none; grid-column: 1 / -1; padding: .25rem .75rem .75rem; }
+    &[data-menu-open='true'] &__navigation { display: block; }
+    &__links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+}
+
+@media (max-width: 25rem) {
+  .sidebar__link {
+    padding-inline: .45rem;
+    svg { inline-size: 1rem; }
+  }
+}

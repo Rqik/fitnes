@@ -4,6 +4,8 @@ import { type Entry } from '../domain/journal';
 import { metrics, parseMetricValue, type Metric } from '../domain/metrics';
 import { Dialog } from './Dialogs';
 import { NumericField } from './Fields';
+import ui from '../styles/ui.module.scss';
+import dialogStyles from './Dialogs.module.scss';
 
 function formatInput(value: number | undefined) {
   return String(value ?? '').replace('.', ',');
@@ -66,9 +68,9 @@ export function MuscleMeasurementDialog({ metric, entries, onSave, onClose }: {
 
   return (
     <Dialog dialogRef={dialog} initialFocus={dateInput} title={`Замер · ${metrics[metric].label}`} compact onClose={onClose} onRequestClose={canDismiss}>
-      <form method="post" className="dialog-body form-stack" onSubmit={handleSubmit}>
-        <fieldset className="form-stack" disabled={isSaving}>
-          <div className="field entry-date">
+      <form method="post" className={`${dialogStyles['dialog__body']} ${ui['form-layout']}`} onSubmit={handleSubmit}>
+        <fieldset className={ui['form-layout']} disabled={isSaving}>
+          <div className={`${ui.field} ${ui['field--date']}`}>
             <label htmlFor={id}>Дата</label>
             <input
               id={id}
@@ -98,18 +100,18 @@ export function MuscleMeasurementDialog({ metric, entries, onSave, onClose }: {
             }}
           />
         </fieldset>
-        {error ? <p className="message message--error" role="alert">{error}</p> : null}
+        {error ? <p className={`${ui.message} ${ui['message--error']}`} role="alert">{error}</p> : null}
         {isDiscardVisible ? (
-          <div className="message discard-message">
+          <div className={`${ui.message} ${ui['message--discard']}`}>
             <span id={`${id}-discard`}>Замер содержит несохранённые изменения.</span>
-            <button type="button" className="button button--danger" ref={discardButton} aria-describedby={`${id}-discard`} disabled={isSaving} onClick={() => dialog.current?.close()}>
+            <button type="button" className={`${ui.button} ${ui['button--danger']}`} ref={discardButton} aria-describedby={`${id}-discard`} disabled={isSaving} onClick={() => dialog.current?.close()}>
               Не сохранять
             </button>
           </div>
         ) : null}
-        <div className="dialog-actions">
-          <button type="button" className="button button--secondary" disabled={isSaving} onClick={() => { if (canDismiss()) dialog.current?.close(); }}>Отмена</button>
-          <button type="submit" className="button button--primary" disabled={isSaving}>{isSaving ? 'Сохраняем…' : 'Сохранить замер'}</button>
+        <div className={dialogStyles['dialog__actions']}>
+          <button type="button" className={`${ui.button} ${ui['button--secondary']}`} disabled={isSaving} onClick={() => { if (canDismiss()) dialog.current?.close(); }}>Отмена</button>
+          <button type="submit" className={`${ui.button} ${ui['button--primary']}`} disabled={isSaving}>{isSaving ? 'Сохраняем…' : 'Сохранить замер'}</button>
         </div>
       </form>
     </Dialog>

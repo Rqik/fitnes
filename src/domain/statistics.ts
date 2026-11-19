@@ -1,10 +1,15 @@
 import { calendarDay, localDate } from './dates';
 import { isAdultGroup, sortEntries, type Entry, type Goal, type Profile } from './journal';
-import { metricKeys, type SeriesMetric } from './metrics';
+import { metricKeys, type Metric, type SeriesMetric } from './metrics';
 
 export type Point = { date: string; value: number; bmiAtWaist?: number };
 export type Series = Map<SeriesMetric, Point[]>;
 export type Period = 30 | 90 | 'all';
+
+export function bodySummaryMetrics(series: Series): Metric[] {
+  const muscleMetric = series.has('muscleMass') || !series.has('muscleShare') ? 'muscleMass' : 'muscleShare';
+  return ['weight', 'height', muscleMetric, 'waist'];
+}
 
 export function buildSeries(entries: readonly Entry[]): Series {
   const result: Series = new Map();

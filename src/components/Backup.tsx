@@ -3,26 +3,28 @@ import { useRef, useState } from 'react';
 import { localDate } from '../domain/dates';
 import { type Journal } from '../domain/journal';
 import { downloadBackup, readBackup } from '../storage/journalStore';
+import ui from '../styles/ui.module.scss';
+import styles from './Backup.module.scss';
 
 export function Backup({ journal, onRestore }: { journal: Journal; onRestore: (backup: Journal) => void }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [isReading, setIsReading] = useState(false);
   const [error, setError] = useState('');
   return (
-    <section className="panel backup-panel" aria-labelledby="backup-heading">
-      <div className="panel-heading">
+    <section className={`${ui.panel} ${styles.backup}`} aria-labelledby="backup-heading">
+      <div className={ui['panel__heading']}>
         <div>
           <h2 id="backup-heading">Резервная копия</h2>
-          <p className="muted">JSON-файл содержит историю замеров, профиль и цели.</p>
+          <p className={ui.muted}>JSON-файл содержит историю замеров, профиль и цели.</p>
         </div>
-        <span className="metric-icon metric-icon--green"><ShieldCheck size={20} aria-hidden="true" /></span>
+        <span className={`${ui['metric-icon']} ${ui['metric-icon--accent']}`}><ShieldCheck size={20} aria-hidden="true" /></span>
       </div>
-      <div className="panel-body form-stack">
-        <div className="toolbar">
-          <button type="button" className="button button--primary" onClick={() => downloadBackup(journal, localDate())}>
+      <div className={`${ui['panel__body']} ${ui['form-layout']}`}>
+        <div className={ui.toolbar}>
+          <button type="button" className={`${ui.button} ${ui['button--primary']}`} onClick={() => downloadBackup(journal, localDate())}>
             <Download size={18} aria-hidden="true" /> Скачать копию
           </button>
-          <button type="button" className="button button--secondary" disabled={isReading} onClick={() => fileInput.current?.click()}>
+          <button type="button" className={`${ui.button} ${ui['button--secondary']}`} disabled={isReading} onClick={() => fileInput.current?.click()}>
             <Upload size={18} aria-hidden="true" /> {isReading ? 'Проверяем файл…' : 'Загрузить копию'}
           </button>
           <input
@@ -49,8 +51,8 @@ export function Backup({ journal, onRestore }: { journal: Journal; onRestore: (b
             }}
           />
         </div>
-        {error ? <p className="message message--error" role="alert">{error}</p> : null}
-        <p className="muted">Сохраните копию, если меняете устройство, браузер или адрес приложения.</p>
+        {error ? <p className={`${ui.message} ${ui['message--error']}`} role="alert">{error}</p> : null}
+        <p className={ui.muted}>Сохраните копию, если меняете устройство, браузер или адрес приложения.</p>
       </div>
     </section>
   );

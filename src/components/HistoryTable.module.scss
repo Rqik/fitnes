@@ -1,0 +1,43 @@
+.history-table {
+  tbody :is(th, td) { vertical-align: middle; }
+  time { font-size: .9rem; }
+
+  &__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem .4rem;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+    font-size: .78rem;
+
+    li { padding: .2rem .42rem; border-radius: .35rem; background: var(--surface); }
+    strong { color: var(--ink); font-weight: 670; white-space: nowrap; }
+  }
+
+  &__actions { inline-size: 1%; }
+
+  &--compact &__values {
+    gap: .25rem .75rem;
+    font-size: .8125rem;
+
+    li { padding: 0; background: none; }
+    strong { font-variant-numeric: tabular-nums; font-weight: 600; }
+  }
+}
+
+.history__empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: .55rem;
+  padding: 3.5rem 1rem;
+
+  h2 { font-size: 1.1rem; }
+}
+
+@media (max-width: 25rem) {
+  .history-table tr > :first-child { padding-inline-start: .65rem; }
+  .history-table tr > :last-child { padding-inline-end: .55rem; }
+  .history-table__actions button { display: flex; }
+}

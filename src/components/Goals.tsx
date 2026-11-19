@@ -6,6 +6,9 @@ import { focusOptions, formatChange, formatValue, metricKeys, metrics, parseMetr
 import { distanceToGoal, goalTrend, type Point, type Series } from '../domain/statistics';
 import { Dialog } from './Dialogs';
 import { NumericField } from './Fields';
+import ui from '../styles/ui.module.scss';
+import styles from './Goals.module.scss';
+import dialogStyles from './Dialogs.module.scss';
 
 function FocusPanel({ focus, series, onSave }: { focus: Focus | null; series: Series; onSave: (focus: Focus | null) => Promise<void> }) {
   const [draft, setDraft] = useState(focus);
@@ -28,28 +31,28 @@ function FocusPanel({ focus, series, onSave }: { focus: Focus | null; series: Se
   }
 
   return (
-    <section className="panel focus-config">
-      <div className="panel-heading">
+    <section className={ui.panel}>
+      <div className={ui['panel__heading']}>
         <div>
           <h2 id="focus-heading">Мой фокус</h2>
-          <p className="muted">Выбранное направление выделяет показатели, за которыми стоит следить.</p>
+          <p className={ui.muted}>Выбранное направление выделяет показатели, за которыми стоит следить.</p>
         </div>
-        <span className="metric-icon metric-icon--green"><Crosshair size={20} aria-hidden="true" /></span>
+        <span className={`${ui['metric-icon']} ${ui['metric-icon--accent']}`}><Crosshair size={20} aria-hidden="true" /></span>
       </div>
-      <div className="panel-body form-stack">
-        <form method="post" className="form-stack" aria-labelledby="focus-heading" onSubmit={submit}>
-          <fieldset className="focus-options">
-            <legend className="sr-only">Направление</legend>
+      <div className={`${ui['panel__body']} ${ui['form-layout']}`}>
+        <form method="post" className={ui['form-layout']} aria-labelledby="focus-heading" onSubmit={submit}>
+          <fieldset className={`${ui['choice-group']} ${styles['goals__options']}`}>
+            <legend className={ui['sr-only']}>Направление</legend>
             {Object.entries(focusOptions).map(([key, option]) => (
               <label key={key}><input type="radio" name="focus" value={key} checked={draft === key} onChange={() => setDraft(key as Focus)} /><span>{option.label}</span></label>
             ))}
             <label><input type="radio" name="focus" value="" checked={draft === null} onChange={() => setDraft(null)} /><span>Без фокуса</span></label>
           </fieldset>
-          <button type="submit" className="button button--secondary fit-content" disabled={isSaving || draft === focus}>Сохранить фокус</button>
-          {error ? <p className="message message--error" role="alert">{error}</p> : null}
+          <button type="submit" className={`${ui.button} ${ui['button--secondary']} ${ui['button--fit']}`} disabled={isSaving || draft === focus}>Сохранить фокус</button>
+          {error ? <p className={`${ui.message} ${ui['message--error']}`} role="alert">{error}</p> : null}
         </form>
         {active ? (
-          <ul className="focus-readings">
+          <ul className={styles['goals__readings']}>
             {active.metrics.map((metric) => {
               const points = series.get(metric);
               const current = points?.at(-1);
@@ -129,23 +132,23 @@ function GoalFields({ metric, goal, labelledBy, onSave }: {
   }
 
   return (
-    <form method="post" className="form-stack" aria-labelledby={labelledBy} onSubmit={submit} onChange={() => setError('')}>
-      <fieldset className="focus-options">
+    <form method="post" className={ui['form-layout']} aria-labelledby={labelledBy} onSubmit={submit} onChange={() => setError('')}>
+      <fieldset className={`${ui['choice-group']} ${styles['goals__options']}`}>
         <legend>Тип цели</legend>
         {([{ key: 'min', title: 'Минимум' }, { key: 'max', title: 'Максимум' }, { key: 'range', title: 'Диапазон' }] as const).map(({ key, title }) => (
           <label key={key}><input type="radio" name="goal-type" value={key} checked={kind === key} onChange={() => setKind(key)} /><span>{title}</span></label>
         ))}
       </fieldset>
       {kind === 'range' ? (
-        <div className="form-grid">
+        <div className={ui['form-layout__grid']}>
           <NumericField metric={metric} name="target-min" label="От" value={min} required onChange={setMin} />
           <NumericField metric={metric} name="target-max" label="До" value={max} required onChange={setMax} />
         </div>
       ) : <NumericField metric={metric} name="target" label="Целевое значение" value={target} required onChange={setTarget} />}
-      {error ? <p className="message message--error" role="alert">{error}</p> : null}
-      <div className="toolbar">
-        <button type="submit" className="button button--primary" disabled={isSaving}>Сохранить цель</button>
-        {goal ? <button type="button" className="button button--secondary delete-link" disabled={isSaving} onClick={() => void save()}>Удалить цель</button> : null}
+      {error ? <p className={`${ui.message} ${ui['message--error']}`} role="alert">{error}</p> : null}
+      <div className={ui.toolbar}>
+        <button type="submit" className={`${ui.button} ${ui['button--primary']}`} disabled={isSaving}>Сохранить цель</button>
+        {goal ? <button type="button" className={`${ui.button} ${ui['button--secondary']} ${ui['button--delete']}`} disabled={isSaving} onClick={() => void save()}>Удалить цель</button> : null}
       </div>
     </form>
   );
@@ -174,8 +177,8 @@ export function GoalEditorDialog({ metric, goal, onSave, onClose }: {
 
   return (
     <Dialog dialogRef={dialog} initialFocus={intro} title={goal ? 'Изменить цель' : 'Задать цель'} compact onClose={onClose} onRequestClose={() => !isSaving}>
-      <div className="dialog-body form-stack">
-        <p className="muted" id={id} ref={intro} tabIndex={-1}>{metrics[metric].label}</p>
+      <div className={`${dialogStyles['dialog__body']} ${ui['form-layout']}`}>
+        <p className={ui.muted} id={id} ref={intro} tabIndex={-1}>{metrics[metric].label}</p>
         <GoalFields metric={metric} goal={goal} labelledBy={id} onSave={save} />
       </div>
     </Dialog>
@@ -193,12 +196,12 @@ export function Goals({ journal, series, onSaveFocus, onSaveGoal }: {
   const saved = metricKeys.filter((key) => goals[key]);
 
   return (
-    <div className="page-stack">
+    <div className={ui['page-stack']}>
       <FocusPanel key={profile.focus ?? 'none'} focus={profile.focus} series={series} onSave={onSaveFocus} />
-      <div className="goals-grid">
-        <section className="panel goals-list">
-          <div className="panel-heading"><h2>Мои цели</h2><span className="metric-icon metric-icon--sand"><Target size={20} aria-hidden="true" /></span></div>
-          {saved.length === 0 ? <p className="panel-body muted">Целей пока нет. Выберите показатель и задайте значение.</p> : (
+      <div className={styles['goals__grid']}>
+        <section className={`${ui.panel} ${styles['goals__list']}`}>
+          <div className={ui['panel__heading']}><h2>Мои цели</h2><span className={`${ui['metric-icon']} ${ui['metric-icon--sand']}`}><Target size={20} aria-hidden="true" /></span></div>
+          {saved.length === 0 ? <p className={`${ui['panel__body']} ${ui.muted}`}>Целей пока нет. Выберите показатель и задайте значение.</p> : (
             <ul>
               {saved.map((key) => {
                 const goal = goals[key];
@@ -211,11 +214,11 @@ export function Goals({ journal, series, onSaveFocus, onSaveGoal }: {
                   <li key={key}>
                     <div>
                       <h3>{metrics[key].label}</h3>
-                      <p className="muted">{goalLabel(goal, key)}{current ? ` · Сейчас ${formatValue(current.value)} ${metrics[key].unit}` : ''}</p>
-                      <p><strong>{status}</strong>{current ? <span className="muted"> · {formatDate(current.date, 'short')}</span> : null}</p>
-                      {trend !== undefined ? <small className="muted">{trend > 0 ? 'Последний замер приблизил к цели' : trend < 0 ? 'Последний замер увеличил расстояние до цели' : 'Расстояние до цели без изменений'}</small> : null}
+                      <p className={ui.muted}>{goalLabel(goal, key)}{current ? ` · Сейчас ${formatValue(current.value)} ${metrics[key].unit}` : ''}</p>
+                      <p><strong>{status}</strong>{current ? <span className={ui.muted}> · {formatDate(current.date, 'short')}</span> : null}</p>
+                      {trend !== undefined ? <small className={ui.muted}>{trend > 0 ? 'Последний замер приблизил к цели' : trend < 0 ? 'Последний замер увеличил расстояние до цели' : 'Расстояние до цели без изменений'}</small> : null}
                     </div>
-                    <button type="button" className="button button--icon" aria-label={`Редактировать цель «${metrics[key].label}»`} onClick={() => {
+                    <button type="button" className={`${ui.button} ${ui['button--icon']}`} aria-label={`Редактировать цель «${metrics[key].label}»`} onClick={() => {
                       setMetric(key);
                       document.getElementById('goal-metric')?.focus();
                     }}><Pencil size={17} aria-hidden="true" /></button>
@@ -225,10 +228,10 @@ export function Goals({ journal, series, onSaveFocus, onSaveGoal }: {
             </ul>
           )}
         </section>
-        <section className="panel">
-          <div className="panel-heading"><h2 id="goal-editor-heading">Настроить цель</h2></div>
-          <div className="panel-body form-stack">
-            <div className="field">
+        <section className={ui.panel}>
+          <div className={ui['panel__heading']}><h2 id="goal-editor-heading">Настроить цель</h2></div>
+          <div className={`${ui['panel__body']} ${ui['form-layout']}`}>
+            <div className={ui.field}>
               <label htmlFor="goal-metric">Показатель</label>
               <select id="goal-metric" name="goal-metric" value={metric} onChange={(event) => setMetric(event.currentTarget.value as Metric)}>
                 {metricKeys.map((key) => <option key={key} value={key}>{metrics[key].label}, {metrics[key].unit}</option>)}

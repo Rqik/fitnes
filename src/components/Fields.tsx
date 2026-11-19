@@ -1,5 +1,7 @@
 import { useId, useState } from 'react';
 import { metrics, parseMetricValue, type Metric } from '../domain/metrics';
+import ui from '../styles/ui.module.scss';
+import styles from './Fields.module.scss';
 
 export function NumericField({ metric, label, name, value, required, onChange }: {
   metric: Metric;
@@ -28,12 +30,12 @@ export function NumericField({ metric, label, name, value, required, onChange }:
   const description = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ');
 
   return (
-    <div className="field">
+    <div className={ui.field}>
       <label htmlFor={id}>
-        {label ?? definition.label}<span className="sr-only">, {definition.unit}</span>
+        {label ?? definition.label}<span className={ui['sr-only']}>, {definition.unit}</span>
       </label>
-      {hint ? <small id={`${id}-hint`} className="field-hint">{hint}</small> : null}
-      <div className="input-with-unit">
+      {hint ? <small id={`${id}-hint`} className={styles['numeric-field__hint']}>{hint}</small> : null}
+      <div className={styles['numeric-field__input']}>
         <input
           id={id}
           name={name ?? metric}
@@ -58,7 +60,7 @@ export function NumericField({ metric, label, name, value, required, onChange }:
         />
         <span aria-hidden="true">{definition.unit}</span>
       </div>
-      <small id={`${id}-error`} className="field-error" aria-live="polite">{error}</small>
+      <small id={`${id}-error`} className={styles['numeric-field__error']} aria-live="polite">{error}</small>
     </div>
   );
 }

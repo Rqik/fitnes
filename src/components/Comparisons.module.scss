@@ -1,0 +1,42 @@
+.comparisons {
+  &__heading {
+    padding: 0 .12rem .7rem;
+
+    h2 { font-size: 1.18rem; font-weight: 720; letter-spacing: -.025em; }
+    p { margin-block-start: .32rem; font-size: .9rem; }
+  }
+
+  &__grid { display: grid; gap: 1.1rem; }
+
+  &__card {
+    display: grid;
+    align-content: start;
+    gap: .5rem;
+    padding: 1.1rem 1.2rem;
+
+    h3 { font-size: .99rem; font-weight: 710; }
+    p { font-size: .86rem; }
+    a { justify-self: start; font-size: .86rem; }
+  }
+
+  &__scroll { overflow-x: auto; }
+
+  &__table {
+    min-inline-size: 33rem;
+
+    td { inline-size: 18%; font-variant-numeric: tabular-nums; }
+  }
+
+  &__date { display: block; color: var(--muted); white-space: nowrap; }
+
+  &__note {
+    padding-block-start: 1rem;
+    font-size: .86rem;
+
+    p { margin-block-end: .35rem; }
+  }
+}
+
+@container main (inline-size > 31rem) {
+  .comparisons__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

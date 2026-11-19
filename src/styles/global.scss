@@ -1,0 +1,50 @@
+:root {
+  color: var(--ink);
+  background: #f4f6f8;
+  font: 100%/1.5 Inter, "Segoe UI", system-ui, sans-serif;
+  font-synthesis: none;
+  --ink: #202833;
+  --muted: #526171;
+  --line: #d6dee6;
+  --control-line: #b4c2cf;
+  --card: #fcfdfe;
+  --surface: #eef2f5;
+  --active-surface: #e4ebf1;
+  --accent: #36556e;
+  --accent-hover: #28475f;
+  --accent-ink: #2d4c65;
+  --error: #8e3529;
+  --radius: .75rem;
+  --target: 2.75rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { min-inline-size: 0; margin: 0; overflow-wrap: break-word; }
+button, input, select { font: inherit; }
+button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+button, summary, select { cursor: pointer; }
+button:disabled { cursor: default; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3, p, ul { margin: 0; }
+h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
+p { text-wrap: pretty; }
+svg { flex: none; }
+fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+legend { padding: 0; }
+
+input:not([type="radio"], [type="file"]), select {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-block-size: var(--target);
+  min-inline-size: 0;
+  padding: .48rem .66rem;
+  border: 1px solid var(--control-line);
+  border-radius: .55rem;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+select { padding-inline-end: .8rem; }
+input:is(:user-invalid, [aria-invalid="true"]) { border-color: #ad574c; background: #fff7f5; }

@@ -41,7 +41,7 @@ test('keeps saved measurements across reload and safely restores a backup on a P
   await expect(page.getByRole('heading', { name: 'Замеров ещё нет' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Мои данные' }).click();
-  const upload = page.locator('input[type=file]');
+  const upload = page.getByLabel('Файл резервной копии', { exact: true });
   await upload.setInputFiles(backupPath);
   const confirmRestore = page.getByRole('dialog', { name: 'Восстановить из копии?' });
   await confirmRestore.getByRole('button', { name: 'Восстановить дневник' }).click();

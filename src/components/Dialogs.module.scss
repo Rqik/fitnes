@@ -1,0 +1,45 @@
+.dialog {
+  inline-size: min(38rem, calc(100% - 1.5rem));
+  max-block-size: min(52rem, calc(100dvh - 1.5rem));
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 .5rem 1.5rem #20283328;
+
+  &--compact { inline-size: min(28rem, calc(100% - 1.5rem)); }
+  &:modal { overscroll-behavior: contain; }
+
+  &::backdrop {
+    background: #20283380;
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .65rem;
+    padding: .75rem 1.15rem;
+    border-block-end: 1px solid var(--line);
+
+    h2 { font-size: 1.28rem; letter-spacing: -.025em; }
+  }
+
+  &__body {
+    padding: 1.05rem 1.15rem;
+    container: form / inline-size;
+
+    > [role="alert"] { margin-block-start: .7rem; }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: .55rem;
+    margin-block-start: .75rem;
+  }
+}
