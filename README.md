@@ -13,6 +13,14 @@ npm run dev
 
 Откройте адрес из вывода Vite. Замеры, профиль и цели хранятся в IndexedDB текущего браузера. Раздел «Мои данные» выгружает и восстанавливает весь дневник из JSON. При смене браузера, устройства или адреса приложения перенесите данные через этот файл.
 
+## Импорт Apple Health
+
+На iPhone откройте приложение «Здоровье», нажмите на значок профиля и выберите экспорт всех данных. В Fitnes откройте «Мои данные» → «Импорт из Apple Health», выберите архив ZIP или файл `export.xml` и подтвердите предпросмотр. Fitnes извлекает вес и рост в браузере. При нескольких замерах за день берётся последний по времени, а уже заполненные значения дневника сохраняются. [Инструкция Apple](https://support.apple.com/en-me/guide/iphone/iph5ede58c3d/ios)
+
+В экспорт попадают замеры, которые уже есть в Apple Health. Например, весы Xiaomi S400 могут передавать туда вес и рост через Xiaomi Home. Для автоматического чтения из HealthKit требуется iOS-приложение с разрешением на доступ к нужным показателям. [Xiaomi S400](https://www.mi.com/uk/support/faq/details/KA-107891/), [Apple HealthKit](https://developer.apple.com/documentation/healthkit/setting-up-healthkit)
+
+Zepp Life позволяет выгрузить персональные данные и передать вес в Mi Fitness. Браслеты Xiaomi передают показатели активности в поддерживаемые приложения в зависимости от модели. Импорт Fitnes подхватит записи веса и роста, если они уже попали в Apple Health. [Выгрузка Zepp Life](https://www.huami.com/privacy-support), [перенос в Mi Fitness](https://www.mi.com/ph/support/article/KA-42608/), [Xiaomi Smart Band 10](https://www.mi.com/global/support/faq/details/KA-579104/)
+
 ## GitHub Pages
 
 1. Добавьте файлы проекта в GitHub-репозиторий с основной веткой `main`.

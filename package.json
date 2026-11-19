@@ -9,15 +9,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/domain.test.ts",
+    "test": "tsx --test tests/domain.test.ts tests/appleHealth.test.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@zip.js/zip.js": "^2.25.0",
     "chart.js": "^4.5.1",
     "idb": "^8.0.3",
     "lucide-react": "^0.577.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "saxes": "^6.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.0",

@@ -1,5 +1,6 @@
 import { Activity, CalendarDays, ChartNoAxesCombined, ClipboardList, LayoutGrid, Menu, PersonStanding, Plus, ShieldCheck, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AppleHealthImport } from './components/AppleHealthImport';
 import { Backup } from './components/Backup';
 import { Comparisons } from './components/Comparisons';
 import { ConfirmDialog } from './components/Dialogs';
@@ -9,6 +10,7 @@ import { History } from './components/HistoryTable';
 import { MuscleMap } from './components/MuscleMap';
 import { MuscleMeasurementDialog } from './components/MuscleMeasurementDialog';
 import { Overview } from './components/Overview';
+import { mergeAppleHealthMeasurements, type AppleHealthMeasurement } from './domain/appleHealth';
 import { formatDate, localDate } from './domain/dates';
 import { sameEntry, sortEntries, type Entry, type Goal, type Journal, type Profile } from './domain/journal';
 import { type Metric, type Values } from './domain/metrics';
@@ -175,6 +177,17 @@ export default function App() {
     setNotice('Дневник восстановлен из копии.');
   }
 
+  async function importAppleHealth(measurements: readonly AppleHealthMeasurement[], revision: number) {
+    await save((current) => {
+      if (current.revision !== revision) {
+        throw new ConflictError('Дневник обновился. Проверьте новый предпросмотр и подтвердите импорт ещё раз.');
+      }
+      const { entries } = mergeAppleHealthMeasurements(current.journal.entries, measurements);
+      return { ...current.journal, entries };
+    });
+    setNotice('Импорт Apple Health завершён.');
+  }
+
   function renderPage() {
     if (!snapshot || !journal) return <p className={`${ui.panel} ${ui['panel__body']} ${ui.muted}`} role="status">Открываем дневник…</p>;
     switch (page) {
@@ -195,7 +208,12 @@ export default function App() {
       case 'goals':
         return <Goals journal={journal} series={series} onSaveGoal={saveGoal} onSaveFocus={(focus) => saveProfile({ focus }, 'Фокус сохранён.')} />;
       case 'backup':
-        return <Backup journal={journal} onRestore={(backup) => setOverlay({ kind: 'restore', journal: backup, revision: snapshot.revision })} />;
+        return (
+          <div className={ui['page-stack']}>
+            <Backup journal={journal} onRestore={(backup) => setOverlay({ kind: 'restore', journal: backup, revision: snapshot.revision })} />
+            <AppleHealthImport entries={journal.entries} revision={snapshot.revision} onImport={importAppleHealth} />
+          </div>
+        );
     }
   }
 
